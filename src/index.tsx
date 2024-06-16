@@ -25,7 +25,7 @@ type StopReadingTags = () => void;
 type PowerListener = (cb: (power: number) => void) => void;
 type TagListener = (cb: (tag: string) => void) => void;
 
-const C72RFIDScanner = {
+export const C72RFIDScanner = {
   initializeReader: C72RFIDScannerModule.initializeReader as InitializeReader,
   deInitializeReader:
     C72RFIDScannerModule.deInitializeReader as DeinitializeReader,
@@ -40,7 +40,7 @@ const C72RFIDScanner = {
   tagListener: C72RFIDScannerModule.tagListener as TagListener,
 };
 
-const AX6737RFIDScanner = {
+export const AX6737RFIDScanner = {
   initializeReader:
     AX6737RFIDScannerModule.initializeReader as InitializeReader,
   deInitializeReader:
@@ -55,9 +55,4 @@ const AX6737RFIDScanner = {
   stopReadingTags: AX6737RFIDScannerModule.stopReadingTags as StopReadingTags,
   powerListener: AX6737RFIDScannerModule.powerListener as PowerListener,
   tagListener: AX6737RFIDScannerModule.tagListener as TagListener,
-};
-
-export default {
-  C72RFIDScanner,
-  AX6737RFIDScanner,
 };
