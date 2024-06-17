@@ -16,7 +16,9 @@ public class BbaRfidScannerPackage implements ReactPackage {
   @Override
   public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
-    modules.add(new BbaRfidScannerModule(reactContext));
+    // modules.add(new BbaRfidScannerModule(reactContext));
+    modules.add(new C72RFIDScannerModule(reactContext));
+    modules.add(new AX6737RFIDScannerModule(reactContext));
     return modules;
   }
 

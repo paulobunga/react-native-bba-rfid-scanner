@@ -87,7 +87,9 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
-
   implementation files('libs/ufhr33db.jar')
+  implementation files('libs/xUtils-2.5.5.jar')
+  implementation files('libs/jxl.jar')
+  implementation files('libs/cw-deviceapi20191022.jar')
 }
 
