@@ -42,7 +42,7 @@ export const C72RFIDScanner = {
 
 export const AX6737RFIDScanner = {
   initializeReader:
-    AX6737RFIDScannerModule.initializeReader as InitializeReader,
+    AX6737RFIDScannerModule.initializeDevice as InitializeReader,
   deInitializeReader:
     AX6737RFIDScannerModule.deInitializeReader as DeinitializeReader,
   readSingleTag: AX6737RFIDScannerModule.readSingleTag as ReadSingleTag,
