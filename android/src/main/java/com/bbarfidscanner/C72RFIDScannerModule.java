@@ -29,7 +29,7 @@ import java.util.List;
 
 @ReactModule(name = C72RFIDScannerModule.NAME)
 public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
-  public static final String NAME = "C72RFIDScanner";
+  public static final String NAME = "C72RFIDScannerModule";
 
   private static final String UHF_READER_POWER_ON_ERROR = "UHF_READER_POWER_ON_ERROR";
   private static final String UHF_READER_INIT_ERROR = "UHF_READER_INIT_ERROR";

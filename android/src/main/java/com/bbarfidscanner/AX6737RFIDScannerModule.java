@@ -46,7 +46,7 @@ import com.facebook.react.bridge.Promise;
 
 @ReactModule(name = AX6737RFIDScannerModule.NAME)
 public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
-  public static final String NAME = "AX6737RFIDScanner";
+  public static final String NAME = "AX6737RFIDScannerModule";
 
   private static final String UHF_READER_READ_ERROR = "UHF_READER_READ_ERROR";
   private static final int MAX_SINGLE_SCAN_RETRIES = 50;
