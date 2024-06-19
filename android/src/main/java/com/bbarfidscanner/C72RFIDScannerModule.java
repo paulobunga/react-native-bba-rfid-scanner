@@ -175,7 +175,7 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
   }
 
   @ReactMethod
-  public void clearAllTags() {
+  public void clearTags() {
     scannedTags.clear();
   }
 

@@ -330,6 +330,4 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
   public void removeListeners(Integer count) {
 
   }
-
-
 }
