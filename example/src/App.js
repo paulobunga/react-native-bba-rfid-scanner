@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-bba-rfid-scanner';
+import { StyleSheet, View } from 'react-native';
+// import {
+//   C72RFIDScanner,
+//   AX6737RFIDScanner,
+// } from 'react-native-bba-rfid-scanner';
 export default function App() {
-    const [result, setResult] = React.useState();
-    React.useEffect(() => {
-        multiply(3, 7).then(setResult);
-    }, []);
-    return (React.createElement(View, { style: styles.container },
-        React.createElement(Text, null,
-            "Result: ",
-            result)));
+    React.useEffect(() => { }, []);
+    return React.createElement(View, { style: styles.container });
 }
 const styles = StyleSheet.create({
     container: {
