@@ -84,7 +84,7 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
       scannedTags.clear();
       promise.resolve();
     } catch(Exception ex) {
-      promise.reject('ERROR', 'Failed to clear tags');
+      promise.reject("ERROR", "Failed to clear tags");
     }
   }
 
