@@ -101,7 +101,7 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
       scannedTags.clear();
       promise.resolve();
     } catch(Exception ex) {
-      promise.reject('ERROR', 'Failed to clear tags');
+      promise.reject("ERROR", "Failed to clear tags");
     }
   }
 
