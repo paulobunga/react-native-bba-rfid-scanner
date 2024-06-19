@@ -1,4 +1,4 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules, type EmitterSubscription } from 'react-native';
 
 const { C72RFIDScannerModule } = NativeModules;
 
@@ -13,6 +13,8 @@ export interface C72RFIDScannerInterface {
     readSingleTag: () => Promise<string[]>;
     addListener: (eventName: string) => void;
     removeListeners: (count: number) => void;
+    addUHFTagListener: (callback: (tag: string[]) => void) => EmitterSubscription;
+    addUHFPowerListener: (callback: (status: string) => void) => EmitterSubscription;
 }
 
 const initializeReader: C72RFIDScannerInterface['initializeReader'] = () => {
@@ -47,16 +49,15 @@ const clearTags: C72RFIDScannerInterface['clearTags'] = () => {
     C72RFIDScannerModule.clearTags();
 };
 
-const addUHFTagListener = (callback: (tag: string[]) => void) => {
+const addUHFTagListener: C72RFIDScannerInterface['addUHFTagListener'] = (callback: (tag: string[]) => void): EmitterSubscription => {
     const subscription = RFIDScannerEventEmitter.addListener('UHF_TAG', callback);
     return subscription;
 };
 
-const addUHFPowerListener = (callback: (status: string) => void) => {
+const addUHFPowerListener: C72RFIDScannerInterface['addUHFPowerListener'] = (callback: (status: string) => void): EmitterSubscription => {
     const subscription = RFIDScannerEventEmitter.addListener('UHF_POWER', callback);
     return subscription;
 };
-
 const removeListeners: C72RFIDScannerInterface['removeListeners'] = (count) => {
     C72RFIDScannerModule.removeListeners(count);
 };

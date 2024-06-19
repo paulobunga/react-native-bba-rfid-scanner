@@ -1,4 +1,4 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules, type EmitterSubscription } from 'react-native';
 
 const { AX6737RFIDScannerModule } = NativeModules;
 
@@ -13,6 +13,9 @@ export interface AX6737RFIDScannerInterface {
     readSingleTag: () => Promise<string[]>;
     addListener: (eventName: string) => void;
     removeListeners: (count: number) => void;
+    addUHFTagListener: (callback: (tag: string[]) => void) => EmitterSubscription;
+    addUHFPowerListener: (callback: (status: string) => void) => EmitterSubscription;
+
 }
 
 const initializeReader: AX6737RFIDScannerInterface['initializeReader'] = () => {
@@ -48,12 +51,12 @@ const readSingleTag: AX6737RFIDScannerInterface['readSingleTag'] = () => {
     });
 };
 
-const addUHFTagListener = (callback: (tag: string[]) => void) => {
+const addUHFTagListener: AX6737RFIDScannerInterface['addUHFTagListener'] = (callback: (tag: string[]) => void): EmitterSubscription => {
     const subscription = RFIDScannerEventEmitter.addListener('UHF_TAG', callback);
     return subscription;
 };
 
-const addUHFPowerListener = (callback: (status: string) => void) => {
+const addUHFPowerListener: AX6737RFIDScannerInterface['addUHFPowerListener'] = (callback: (status: string) => void): EmitterSubscription => {
     const subscription = RFIDScannerEventEmitter.addListener('UHF_POWER', callback);
     return subscription;
 };
