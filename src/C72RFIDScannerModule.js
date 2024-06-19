@@ -24,44 +24,8 @@ const startReadingTags = (callback) => {
 const stopReadingTags = (callback) => {
     C72RFIDScannerModule.stopReadingTags(callback);
 };
-const readPower = () => {
-    return new Promise((resolve, reject) => {
-        C72RFIDScannerModule.readPower()
-            .then((powerValue) => {
-            resolve(powerValue);
-        })
-            .catch((error) => {
-            reject(error);
-        });
-    });
-};
-const changePower = (powerValue) => {
-    return new Promise((resolve, reject) => {
-        C72RFIDScannerModule.changePower(powerValue)
-            .then((powerState) => {
-            resolve(powerState);
-        })
-            .catch((error) => {
-            reject(error);
-        });
-    });
-};
-const writeDataIntoEpc = (epc) => {
-    return new Promise((resolve, reject) => {
-        C72RFIDScannerModule.writeDataIntoEpc(epc)
-            .then((writeState) => {
-            resolve(writeState);
-        })
-            .catch((error) => {
-            reject(error);
-        });
-    });
-};
 const clearTags = () => {
     C72RFIDScannerModule.clearTags();
-};
-const findTag = (findEpc, callback) => {
-    C72RFIDScannerModule.findTag(findEpc, callback);
 };
 const addUHFTagListener = (callback) => {
     const subscription = RFIDScannerEventEmitter.addListener('UHF_TAG', callback);
@@ -83,11 +47,7 @@ const C72RFIDScanner = {
     readSingleTag,
     startReadingTags,
     stopReadingTags,
-    readPower,
-    changePower,
-    writeDataIntoEpc,
     clearTags,
-    findTag,
     addUHFTagListener,
     addUHFPowerListener,
     removeListeners,

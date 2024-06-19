@@ -66,27 +66,6 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
     return NAME;
   }
 
-  @Override
-  public void onHostDestroy() {
-    new UhfReaderPower(false).start();
-  }
-
-  @Override
-  public void onHostResume() {
-  }
-
-  @Override
-  public void onHostPause() {
-  }
-
-  private void sendEvent(String eventName, @Nullable WritableArray array) {
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, array);
-  }
-
-  private void sendEvent(String eventName, @Nullable String status) {
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, status);
-  }
-
   @ReactMethod
   private void initializeReader() {
     Log.d("UHF Reader", "Initializing Reader");
@@ -97,6 +76,24 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
   public void deInitializeReader() {
     Log.d("UHF Reader", "DeInitializing Reader");
     new UhfReaderPower(false).start();
+  } 
+
+  @ReactMethod
+  public void clearTags() {
+    scannedTags.clear();
+  }
+
+  @ReactMethod
+  public void startReadingTags(final Callback callback) {
+    uhfInventoryStatus = mReader.startInventoryTag();
+    new TagThread().start();
+    callback.invoke(uhfInventoryStatus);
+  }
+
+  @ReactMethod
+  public void stopReadingTags(final Callback callback) {
+    uhfInventoryStatus = !(mReader.stopInventory());
+    callback.invoke(scannedTags.size());
   }
 
   @ReactMethod
@@ -117,73 +114,65 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
   }
 
   @ReactMethod
-  public void startReadingTags(final Callback callback) {
-    uhfInventoryStatus = mReader.startInventoryTag();
-    new TagThread().start();
-    callback.invoke(uhfInventoryStatus);
+  public void addListener(String eventName) {
+
   }
 
   @ReactMethod
-  public void stopReadingTags(final Callback callback) {
-    uhfInventoryStatus = !(mReader.stopInventory());
-    callback.invoke(scannedTags.size());
+  public void removeListeners(Integer count) {
+
   }
 
-  @ReactMethod
-  public void readPower(final Promise promise) {
-    try {
-      int uhfPower = mReader.getPower();
-      if (uhfPower >= 0) {
-        promise.resolve(uhfPower);
-      } else {
-        promise.reject(UHF_READER_OTHER_ERROR, "INVALID POWER VALUE");
+  private void sendEvent(String eventName, @Nullable WritableArray array) {
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, array);
+  }
+
+  private void sendEvent(String eventName, @Nullable String status) {
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, status);
+  }
+
+  class TagThread extends Thread {
+
+    String findEpc;
+
+    public TagThread() {
+      findEpc = "";
+    }
+
+    public TagThread(String findEpc) {
+      this.findEpc = findEpc;
+    }
+
+    public void run() {
+      String strTid;
+      String strResult;
+      UHFTAGInfo res = null;
+      while (uhfInventoryStatus) {
+        res = mReader.readTagFromBuffer();
+        if (res != null) {
+          if ("".equals(findEpc)) addIfNotExists(res);
+          else lostTagOnly(res);
+        }
       }
-      Log.d("UHF_SCANNER", String.valueOf(uhfPower));
-
-    } catch (Exception ex) {
-      Log.d("UHF_SCANNER", ex.getLocalizedMessage());
-      promise.reject(UHF_READER_OTHER_ERROR, ex.getLocalizedMessage());
     }
-  }
 
-  @ReactMethod
-  public void changePower(int powerValue, final Promise promise) {
-    try {
-      Boolean uhfPowerState = mReader.setPower(powerValue);
-      if (uhfPowerState) promise.resolve(uhfPowerState);
-      else promise.reject(UHF_READER_OTHER_ERROR, "Can't Change Power");
-    } catch (Exception ex) {
-      Log.d("UHF_SCANNER", ex.getLocalizedMessage());
-      promise.reject(UHF_READER_OTHER_ERROR, ex.getLocalizedMessage());
+    public void lostTagOnly(UHFTAGInfo tag) {
+      String epc = tag.getEPC(); //mReader.convertUiiToEPC(tag[1]);
+      if (epc.equals(findEpc)) {
+        // Same Tag Found
+        //tag[1] = mReader.convertUiiToEPC(tag[1]);
+        String[] tagData = {tag.getEPC(), tag.getRssi()};
+        sendEvent("UHF_TAG", C72RFIDScannerModule.convertArrayToWritableArray(tagData));
+      }
     }
-  }
 
-  @ReactMethod
-  public void writeDataIntoEpc(String epc, final Promise promise) {
-    if (epc.length() == (6 * 4)) {
-      epc += "00000000";
-      // Access Password, Bank Enum (EPC(1), TID(2),...), Pointer, Count, Data
-      //Boolean uhfWriteState = mReader.writeData_Ex("00000000", BankEnum.valueOf("UII"), 2, 6, epc);
-
-      Boolean uhfWriteState = mReader.writeData("00000000", IUHF.Bank_EPC, 2, 6, epc);
-
-      if (uhfWriteState) promise.resolve(uhfWriteState);
-      else promise.reject(UHF_READER_WRITE_ERROR, "Can't Write Data");
-    } else {
-      promise.reject(UHF_READER_WRITE_ERROR, "Invalid Data");
+    public void addIfNotExists(UHFTAGInfo tid) {
+      if (!scannedTags.contains(tid.getEPC())) {
+        scannedTags.add(tid.getEPC());
+        String[] tagData = {tid.getEPC(), tid.getRssi()};
+        sendEvent("UHF_TAG", C72RFIDScannerModule.convertArrayToWritableArray(tagData));
+      }
     }
-  }
-
-  @ReactMethod
-  public void clearTags() {
-    scannedTags.clear();
-  }
-
-  @ReactMethod
-  public void findTag(final String findEpc, final Callback callback) {
-    uhfInventoryStatus = mReader.startInventoryTag();
-    new TagThread(findEpc).start();
-    callback.invoke(uhfInventoryStatus);
   }
 
   class UhfReaderPower extends Thread {
@@ -237,57 +226,16 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
     }
   }
 
-  class TagThread extends Thread {
-
-    String findEpc;
-
-    public TagThread() {
-      findEpc = "";
-    }
-
-    public TagThread(String findEpc) {
-      this.findEpc = findEpc;
-    }
-
-    public void run() {
-      String strTid;
-      String strResult;
-      UHFTAGInfo res = null;
-      while (uhfInventoryStatus) {
-        res = mReader.readTagFromBuffer();
-        if (res != null) {
-          if ("".equals(findEpc)) addIfNotExists(res);
-          else lostTagOnly(res);
-        }
-      }
-    }
-
-    public void lostTagOnly(UHFTAGInfo tag) {
-      String epc = tag.getEPC(); //mReader.convertUiiToEPC(tag[1]);
-      if (epc.equals(findEpc)) {
-        // Same Tag Found
-        //tag[1] = mReader.convertUiiToEPC(tag[1]);
-        String[] tagData = {tag.getEPC(), tag.getRssi()};
-        sendEvent("UHF_TAG", C72RFIDScannerModule.convertArrayToWritableArray(tagData));
-      }
-    }
-
-    public void addIfNotExists(UHFTAGInfo tid) {
-      if (!scannedTags.contains(tid.getEPC())) {
-        scannedTags.add(tid.getEPC());
-        String[] tagData = {tid.getEPC(), tid.getRssi()};
-        sendEvent("UHF_TAG", C72RFIDScannerModule.convertArrayToWritableArray(tagData));
-      }
-    }
+  @Override
+  public void onHostDestroy() {
+    new UhfReaderPower(false).start();
   }
 
-  @ReactMethod
-  public void addListener(String eventName) {
-
+  @Override
+  public void onHostResume() {
   }
 
-  @ReactMethod
-  public void removeListeners(Integer count) {
-
+  @Override
+  public void onHostPause() {
   }
 }

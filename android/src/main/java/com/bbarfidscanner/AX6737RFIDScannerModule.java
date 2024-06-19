@@ -76,6 +76,7 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
     this.reactContext.addLifecycleEventListener(this);
   }
 
+
   @Override
   @NonNull
   public String getName() {
@@ -85,6 +86,13 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
   @ReactMethod
   public void initializeReader() {
     this.uhfrManager = UHFRManager.getInstance();
+  }
+
+  @ReactMethod
+  public void deInitializeReader() {
+    if(this.uhfrManager != null) {
+      this.uhfrManager.close();
+    }
   }
 
   @ReactMethod

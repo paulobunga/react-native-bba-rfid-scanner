@@ -7,14 +7,10 @@ const RFIDScannerEventEmitter = new NativeEventEmitter(C72RFIDScannerModule);
 export interface C72RFIDScannerInterface {
     initializeReader: () => void;
     deInitializeReader: () => void;
-    readSingleTag: () => Promise<string[]>;
-    startReadingTags: (callback: (uhfInventoryStatus: boolean) => void) => void;
-    stopReadingTags: (callback: (tagCount: number) => void) => void;
-    readPower: () => Promise<number>;
-    changePower: (powerValue: number) => Promise<boolean>;
-    writeDataIntoEpc: (epc: string) => Promise<boolean>;
     clearTags: () => void;
-    findTag: (findEpc: string, callback: (uhfInventoryStatus: boolean) => void) => void;
+    startReadingTags: (callback: (isStarted: boolean) => void) => void;
+    stopReadingTags: (callback: (tagCount: number) => void) => void;
+    readSingleTag: () => Promise<string[]>;
     addListener: (eventName: string) => void;
     removeListeners: (count: number) => void;
 }
@@ -47,48 +43,8 @@ const stopReadingTags: C72RFIDScannerInterface['stopReadingTags'] = (callback) =
     C72RFIDScannerModule.stopReadingTags(callback);
 };
 
-const readPower: C72RFIDScannerInterface['readPower'] = () => {
-    return new Promise((resolve, reject) => {
-        C72RFIDScannerModule.readPower()
-            .then((powerValue: number) => {
-                resolve(powerValue);
-            })
-            .catch((error: Error) => {
-                reject(error);
-            });
-    });
-};
-
-const changePower: C72RFIDScannerInterface['changePower'] = (powerValue) => {
-    return new Promise((resolve, reject) => {
-        C72RFIDScannerModule.changePower(powerValue)
-            .then((powerState: boolean) => {
-                resolve(powerState);
-            })
-            .catch((error: Error) => {
-                reject(error);
-            });
-    });
-};
-
-const writeDataIntoEpc: C72RFIDScannerInterface['writeDataIntoEpc'] = (epc) => {
-    return new Promise((resolve, reject) => {
-        C72RFIDScannerModule.writeDataIntoEpc(epc)
-            .then((writeState: boolean) => {
-                resolve(writeState);
-            })
-            .catch((error: Error) => {
-                reject(error);
-            });
-    });
-};
-
 const clearTags: C72RFIDScannerInterface['clearTags'] = () => {
     C72RFIDScannerModule.clearTags();
-};
-
-const findTag: C72RFIDScannerInterface['findTag'] = (findEpc, callback) => {
-    C72RFIDScannerModule.findTag(findEpc, callback);
 };
 
 const addUHFTagListener = (callback: (tag: string[]) => void) => {
@@ -115,11 +71,7 @@ const C72RFIDScanner = {
     readSingleTag,
     startReadingTags,
     stopReadingTags,
-    readPower,
-    changePower,
-    writeDataIntoEpc,
     clearTags,
-    findTag,
     addUHFTagListener,
     addUHFPowerListener,
     removeListeners,
