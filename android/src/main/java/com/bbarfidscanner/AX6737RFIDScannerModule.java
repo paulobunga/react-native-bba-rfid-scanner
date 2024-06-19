@@ -83,7 +83,7 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
   }
 
   @ReactMethod
-  public void initializeDevice() {
+  public void initializeReader() {
     this.uhfrManager = UHFRManager.getInstance();
   }
 

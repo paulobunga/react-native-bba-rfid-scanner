@@ -5,7 +5,7 @@ const { AX6737RFIDScannerModule } = NativeModules;
 const RFIDScannerEventEmitter = new NativeEventEmitter(AX6737RFIDScannerModule);
 
 export interface AX6737RFIDScannerInterface {
-    initializeDevice: () => void;
+    initializeReader: () => void;
     clearTags: () => void;
     startReadingTags: (callback: (isStarted: boolean) => void) => void;
     stopReadingTags: (callback: (tagCount: number) => void) => void;
@@ -14,8 +14,8 @@ export interface AX6737RFIDScannerInterface {
     removeListeners: (count: number) => void;
 }
 
-const initializeDevice: AX6737RFIDScannerInterface['initializeDevice'] = () => {
-    AX6737RFIDScannerModule.initializeDevice();
+const initializeReader: AX6737RFIDScannerInterface['initializeReader'] = () => {
+    AX6737RFIDScannerModule.initializeReader();
 };
 
 const clearTags: AX6737RFIDScannerInterface['clearTags'] = () => {
@@ -69,7 +69,7 @@ const AX6737RFIDScanner = {
     startReadingTags,
     stopReadingTags,
     clearTags,
-    initializeDevice,
+    initializeReader,
 };
 
 export default AX6737RFIDScanner;

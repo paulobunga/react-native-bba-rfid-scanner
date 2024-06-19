@@ -1,8 +1,8 @@
 import { NativeEventEmitter, NativeModules } from 'react-native';
 const { AX6737RFIDScannerModule } = NativeModules;
 const RFIDScannerEventEmitter = new NativeEventEmitter(AX6737RFIDScannerModule);
-const initializeDevice = () => {
-    AX6737RFIDScannerModule.initializeDevice();
+const initializeReader = () => {
+    AX6737RFIDScannerModule.initializeReader();
 };
 const clearTags = () => {
     AX6737RFIDScannerModule.clearTags();
@@ -47,6 +47,6 @@ const AX6737RFIDScanner = {
     startReadingTags,
     stopReadingTags,
     clearTags,
-    initializeDevice,
+    initializeReader,
 };
 export default AX6737RFIDScanner;
