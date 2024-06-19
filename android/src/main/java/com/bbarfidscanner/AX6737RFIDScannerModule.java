@@ -321,5 +321,15 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
     }
   }
 
+  @ReactMethod
+  public void addListener(String eventName) {
+
+  }
+
+  @ReactMethod
+  public void removeListeners(Integer count) {
+
+  }
+
 
 }

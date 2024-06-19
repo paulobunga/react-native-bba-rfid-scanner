@@ -280,4 +280,14 @@ public class C72RFIDScannerModule extends ReactContextBaseJavaModule implements 
       }
     }
   }
+
+  @ReactMethod
+  public void addListener(String eventName) {
+
+  }
+
+  @ReactMethod
+  public void removeListeners(Integer count) {
+
+  }
 }
