@@ -96,8 +96,13 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
   }
 
   @ReactMethod
-  public void clearTags() {
-    scannedTags.clear();
+  public void clearTags(final Promise promise) {
+    try {
+      scannedTags.clear();
+      promise.resolve();
+    } catch(Exception ex) {
+      promise.reject('ERROR', 'Failed to clear tags');
+    }
   }
 
   private List<String> extractTagData(Reader.TAGINFO tfs) {

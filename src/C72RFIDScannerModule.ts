@@ -46,7 +46,11 @@ const stopReadingTags: C72RFIDScannerInterface['stopReadingTags'] = (callback) =
 };
 
 const clearTags: C72RFIDScannerInterface['clearTags'] = () => {
-    C72RFIDScannerModule.clearTags();
+    return new Promise((resolve, reject) => {
+        C72RFIDScannerModule.clearTags()
+            .then((value: any) => resolve(value))
+            .catch((error: any) => reject(error));
+    });
 };
 
 const addUHFTagListener: C72RFIDScannerInterface['addUHFTagListener'] = (callback: (tag: string[]) => void): EmitterSubscription => {
