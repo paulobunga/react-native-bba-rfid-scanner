@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -72,7 +73,14 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
     this.reactContext = reactContext;
     IntentFilter filter = new IntentFilter();
     filter.addAction("android.rfid.FUN_KEY");
-    this.reactContext.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED);
+
+    // Register the receiver with the appropriate flag
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        this.reactContext.registerReceiver(myReceiver, filter, Context.RECEIVER_EXPORTED);
+    } else {
+        this.reactContext.registerReceiver(myReceiver, filter);
+    }
+
     this.reactContext.addLifecycleEventListener(this);
   }
 
