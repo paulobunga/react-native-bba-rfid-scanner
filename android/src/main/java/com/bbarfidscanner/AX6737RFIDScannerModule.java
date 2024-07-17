@@ -76,9 +76,9 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
 
     // Register the receiver with the appropriate flag
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        this.reactContext.registerReceiver(myReceiver, filter, Context.RECEIVER_EXPORTED);
+        this.reactContext.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED);
     } else {
-        this.reactContext.registerReceiver(myReceiver, filter);
+        this.reactContext.registerReceiver(receiver, filter);
     }
 
     this.reactContext.addLifecycleEventListener(this);
