@@ -72,7 +72,7 @@ public class AX6737RFIDScannerModule extends ReactContextBaseJavaModule implemen
     this.reactContext = reactContext;
     IntentFilter filter = new IntentFilter();
     filter.addAction("android.rfid.FUN_KEY");
-    this.reactContext.registerReceiver(receiver, filter);
+    this.reactContext.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED);
     this.reactContext.addLifecycleEventListener(this);
   }
 
